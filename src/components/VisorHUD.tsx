@@ -1592,7 +1592,7 @@ export const VisorHUD: React.FC<VisorHUDProps> = ({
 
           {/* TACTICAL MULTI-SPECTRAL HUGE MARS MAP (Rendered in Corner with Arrow Movement) */}
           {showMiniMap && (
-            <div className="mt-1">
+            <div className="mt-1" data-tour="visor-map">
               <TacticalMarsMap
                 astronautX={effectiveAstroPos.x}
                 astronautY={effectiveAstroPos.y}

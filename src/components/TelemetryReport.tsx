@@ -129,7 +129,7 @@ ${generateAsciiHud()}
     <div className="w-full max-w-6xl mx-auto px-4 py-6 space-y-6">
       
       {/* Console Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-900/90 rounded-xl border border-slate-800">
+      <div data-tour="console-header" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-900/90 rounded-xl border border-slate-800">
         <div className="flex items-center gap-3">
           <Terminal className="w-6 h-6 text-cyan-400 shrink-0" />
           <div>
