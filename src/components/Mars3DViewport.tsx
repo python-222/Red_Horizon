@@ -22,6 +22,7 @@ import { marsDistanceKm, slerpLatLng } from '../data/marsCartography';
 import { EquipmentControlState, ActiveEnvironmentState, MarsBiomeId, SeasonalFrostMode } from '../types/telemetry';
 import { MarsTerrainManager } from './marsTerrain';
 import { MarsFarTerrain } from './marsFarTerrain';
+import { createMarsAstronaut } from './marsAstronaut';
 import { MarsGlobalGlobe, GLOBE_RADIUS } from './marsGlobalGlobe';
 import { vehicleSim, type LiveVehiclePose } from '../utils/vehicleController';
 import { dualSense } from '../utils/dualsenseController';
@@ -981,27 +982,8 @@ export const Mars3DViewport: React.FC<Mars3DViewportProps> = React.memo(({
     roverGroup.add(faultLight);
 
     // Astronaut EVA Suit figure (visible when locomotionMode === 'eva_walk')
-    const astronautGroup = new THREE.Group();
-    const suitTorso = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.42, 0.9, 6, 12),
-      new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.45, metalness: 0.15 })
-    );
-    suitTorso.position.y = 1.15;
-    astronautGroup.add(suitTorso);
-
-    const plssPack = new THREE.Mesh(
-      new THREE.BoxGeometry(0.55, 0.85, 0.38),
-      new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.35, metalness: 0.65 })
-    );
-    plssPack.position.set(0, 1.25, -0.45);
-    astronautGroup.add(plssPack);
-
-    const helmet = new THREE.Mesh(
-      new THREE.SphereGeometry(0.32, 16, 16),
-      new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.12, metalness: 0.88 })
-    );
-    helmet.position.set(0, 1.98, 0.05);
-    astronautGroup.add(helmet);
+    const astronaut = createMarsAstronaut();
+    const astronautGroup = astronaut.group;
     astronautGroup.visible = false;
     scene.add(astronautGroup);
 
@@ -2235,10 +2217,20 @@ export const Mars3DViewport: React.FC<Mars3DViewportProps> = React.memo(({
       beamConeMesh.visible = showLocalSurface && eq.headlightsEnabled && brownoutFlicker > 0.2;
 
       const actualLinearSpeed = livePose.speedMps;
-      const speedNorm = Math.min(1, Math.abs(actualLinearSpeed) / 6.0);
-      const evaBounce = isEvaWalk ? Math.abs(Math.sin(elapsed * 6.5)) * 0.16 * speedNorm : 0;
-      astronautGroup.position.set(rx, groundY + evaBounce, rz);
+      astronautGroup.position.set(rx, groundY, rz);
       astronautGroup.rotation.y = headingRad;
+      if (astronautGroup.visible) {
+        astronaut.update({
+          delta,
+          elapsed,
+          speedMps: actualLinearSpeed,
+          terrainNormal: _smoothedTerrainNormal,
+          headingRad,
+          headlightsOn: eq.headlightsEnabled,
+          brownout: brownoutFlicker,
+          damaged: isRoverDamaged,
+        });
+      }
 
       // Wheel rotation read directly from single-source-of-truth physics store
       for (let i = 0; i < wheelMeshes.length; i++) {
@@ -2617,7 +2609,7 @@ export const Mars3DViewport: React.FC<Mars3DViewportProps> = React.memo(({
         });
       };
       disposeGroupMeshes(roverGroup);
-      disposeGroupMeshes(astronautGroup);
+      astronaut.dispose();
       disposeGroupMeshes(habitatGroup);
 
       // Waypoint, landform, custom waypoint, hotspot dome, and POI meshes share geometries
