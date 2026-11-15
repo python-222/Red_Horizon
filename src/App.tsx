@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect, useCallback, useRef, useMemo, Suspense, lazy } from 'react';
 import { TopNav } from './components/TopNav';
+import { JudgeTutorial, hasSeenJudgeTutorial } from './components/JudgeTutorial';
 import {
   CustomWaypoint,
   jezeroMetersToLatLng,
@@ -154,6 +155,10 @@ const INITIAL_POS = {
 export default function App() {
   const [activeTab, setActiveTab] = useState<'hud' | 'visor' | 'console' | 'sensors'>('hud');
   const [hudMode, setHudMode] = useState<HudDisplayMode>('standard');
+  // Guided tour for judges: opens by itself on the first visit, replayable from the top bar.
+  const [tutorialOpen, setTutorialOpen] = useState<boolean>(() => !hasSeenJudgeTutorial());
+  const handleOpenTutorial = useCallback(() => setTutorialOpen(true), []);
+  const handleCloseTutorial = useCallback(() => setTutorialOpen(false), []);
   const [state, setState] = useState<ExcursionState>(SOL_244_BASELINE_STATE);
   const [currentScenarioKey, setCurrentScenarioKey] = useState<string>('baseline');
   const [isMuted, setIsMutedState] = useState<boolean>(false);
@@ -2771,6 +2776,16 @@ export default function App() {
     </div>
   );
 
+  const tutorialOverlay = (
+    <JudgeTutorial
+      key="judge-tutorial"
+      open={tutorialOpen}
+      onClose={handleCloseTutorial}
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
+    />
+  );
+
   if (activeTab === 'hud') {
     return (
       <>
@@ -2810,6 +2825,7 @@ export default function App() {
             onDismissCustomArrival={handleDismissCustomArrival}
             onEngageEmergencyRtb={() => handleEngageEmergencyRtb(false)}
             onHazardOverride={handleHazardOverride}
+            onOpenTutorial={handleOpenTutorial}
             anyHazardActive={anyHazardActive}
             onTogglePolarFrostMode={handleTogglePolarFrostMode}
             discoveredFeatureIds={discoveredFeatureIds}
@@ -2819,6 +2835,7 @@ export default function App() {
           />
         </Suspense>
         <VirtualControllerCursor active={cursorModeActive} />
+        {tutorialOverlay}
       </>
     );
   }
@@ -2835,6 +2852,7 @@ export default function App() {
           anyHazardActive={anyHazardActive}
           onSimulateEmergency={handleSimulateEmergency}
           onHazardOverride={handleHazardOverride}
+          onOpenTutorial={handleOpenTutorial}
           sol={state.mission.currentSol}
           timeUtc={state.mission.missionTimeUtc}
         />
@@ -2975,6 +2993,7 @@ export default function App() {
         </div>
       )}
       <VirtualControllerCursor active={cursorModeActive} />
+      {tutorialOverlay}
     </>
   );
 }

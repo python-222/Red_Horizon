@@ -391,7 +391,7 @@ export const NasaDatasetMatrix: React.FC<NasaDatasetMatrixProps> = ({
       ) : (
         <>
       {/* Active Environment State & Dynamic Climate Engine Summary */}
-      <section className="bg-slate-950 rounded-xl border border-cyan-500/40 p-5 shadow-xl space-y-4">
+      <section data-tour="datasets-env" className="bg-slate-950 rounded-xl border border-cyan-500/40 p-5 shadow-xl space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
           <div>
             <div className="text-[11px] font-mono text-cyan-400 uppercase tracking-wider">
@@ -467,7 +467,7 @@ export const NasaDatasetMatrix: React.FC<NasaDatasetMatrixProps> = ({
       </section>
       
       {/* Gamified Training Modules & Procedural Worst-Case Failure Injection */}
-      <section className="bg-slate-950 rounded-xl border border-slate-800 p-5 shadow-xl">
+      <section data-tour="datasets-challenges" className="bg-slate-950 rounded-xl border border-slate-800 p-5 shadow-xl">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3 mb-4">
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-amber-400" />
@@ -574,7 +574,7 @@ export const NasaDatasetMatrix: React.FC<NasaDatasetMatrixProps> = ({
 
       {/* Planetary Mars Cartography & Scientific Landmarks (300 km Visor Proximity Filter) */}
       <section className="bg-slate-950 rounded-xl border border-slate-800 p-5 shadow-xl">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3 mb-4">
+        <div data-tour="datasets-cartography" className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3 mb-4">
           <div className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-cyan-400" />
             <div>

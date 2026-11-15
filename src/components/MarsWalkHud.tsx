@@ -132,6 +132,7 @@ interface MarsWalkHudProps {
   onDismissCustomArrival: () => void;
   onEngageEmergencyRtb?: () => void;
   onHazardOverride?: () => void;
+  onOpenTutorial?: () => void;
   anyHazardActive?: boolean;
   onTogglePolarFrostMode?: (mode?: SeasonalFrostMode) => void;
   discoveredFeatureIds?: string[];
@@ -175,6 +176,7 @@ export const MarsWalkHud: React.FC<MarsWalkHudProps> = ({
   onDismissCustomArrival,
   onEngageEmergencyRtb,
   onHazardOverride,
+  onOpenTutorial,
   anyHazardActive = false,
   onTogglePolarFrostMode,
   discoveredFeatureIds = [],
@@ -1690,7 +1692,7 @@ export const MarsWalkHud: React.FC<MarsWalkHudProps> = ({
             <div className="brand">
               MARS <span>WALK</span> · EVA
             </div>
-            <nav className="hud-nav">
+            <nav className="hud-nav" data-tour="nav">
               <button
                 type="button"
                 className={activeTab === 'hud' ? 'active-tab' : ''}
@@ -1750,7 +1752,7 @@ export const MarsWalkHud: React.FC<MarsWalkHudProps> = ({
             </div>
           </div>
 
-          <div className="stat">
+          <div className="stat" data-tour="status">
             <span className="pill">
               <i className={`dot ${dotClass}`} id="linkDot" /> Comms <b id="linkTxt">{linkTxt}</b>
             </span>
@@ -1834,12 +1836,17 @@ export const MarsWalkHud: React.FC<MarsWalkHudProps> = ({
                 Hazard Override
               </button>
             )}
+            {onOpenTutorial && (
+              <button type="button" onClick={onOpenTutorial} title="Replay the guided tour for judges">
+                Tutorial
+              </button>
+            )}
           </div>
         </header>
 
         {/* LEFT COLUMN */}
         <aside className="left">
-          <section className="panel">
+          <section className="panel" data-tour="layers">
             <h2>
               Map layers <small>USGS</small>
             </h2>
@@ -1945,7 +1952,7 @@ export const MarsWalkHud: React.FC<MarsWalkHudProps> = ({
             </div>
           </section>
 
-          <section className="panel grow">
+          <section className="panel grow" data-tour="traverse">
             <h2>
               Traverse <small id="wpCount">{waypoints.length}</small>
             </h2>
@@ -2130,7 +2137,7 @@ export const MarsWalkHud: React.FC<MarsWalkHudProps> = ({
 
         {/* RIGHT COLUMN */}
         <aside className="right">
-          <section className="panel">
+          <section className="panel" data-tour="life">
             <h2>
               Life support <small>{equipment.locomotionMode === 'rover' ? 'ROVER' : 'EVA'}</small>
             </h2>
@@ -2235,7 +2242,7 @@ export const MarsWalkHud: React.FC<MarsWalkHudProps> = ({
             </div>
           </section>
 
-          <section className="panel">
+          <section className="panel" data-tour="astronaut">
             <h2>
               Astronaut <small>WASD</small>
             </h2>
@@ -2322,7 +2329,7 @@ export const MarsWalkHud: React.FC<MarsWalkHudProps> = ({
             </div>
           </section>
 
-          <section className="panel">
+          <section className="panel" data-tour="environment">
             <h2>
               Active Environment <small>MEDA / RAD</small>
             </h2>
