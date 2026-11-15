@@ -1,4 +1,4 @@
-/* Mars Walk EVA HUD — global Mars map + astronaut panels.
+/* Red Horizon EVA HUD — global Mars map + astronaut panels.
  * Map tiles come from the USGS/Esri-hosted Mars services. Change them in LAYERS below. */
 
 const MARS_RADIUS_KM = 3389.5;

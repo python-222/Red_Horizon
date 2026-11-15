@@ -1,5 +1,5 @@
 /**
- * Telemetry and Mission types for Martian Excursion Navigation AI
+ * Telemetry and Mission types for Red Horizon
  * Calibrated against NASA Perseverance (MEDA), MRO (HiRISE DTM), and MSL/M2020 (RAD) datasets.
  */
 
