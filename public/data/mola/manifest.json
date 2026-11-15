@@ -1,0 +1,136 @@
+{
+ "source": "NASA MGS MOLA MEGDR (PDS Geosciences Node), elevation in meters above the Mars areoid",
+ "global": {
+  "file": "global.bin",
+  "ppd": 4,
+  "width": 1440,
+  "height": 720,
+  "latTop": 90,
+  "lngWest": 0
+ },
+ "regions": [
+  {
+   "id": "JEZERO",
+   "name": "Jezero Crater & Western Delta",
+   "file": "jezero.bin",
+   "ppd": 128,
+   "width": 728,
+   "height": 692,
+   "latTop": 21.140625,
+   "lngWest": 74.6015625
+  },
+  {
+   "id": "SYRTIS",
+   "name": "Syrtis Major",
+   "file": "syrtis.bin",
+   "ppd": 128,
+   "width": 873,
+   "height": 865,
+   "latTop": 11.78125,
+   "lngWest": 66.0859375
+  },
+  {
+   "id": "HELLAS",
+   "name": "Hellas Planitia",
+   "file": "hellas.bin",
+   "ppd": 128,
+   "width": 1521,
+   "height": 1124,
+   "latTop": -38.0078125,
+   "lngWest": 64.5546875
+  },
+  {
+   "id": "REULL",
+   "name": "Reull Vallis",
+   "file": "reull.bin",
+   "ppd": 128,
+   "width": 937,
+   "height": 692,
+   "latTop": -39.796875,
+   "lngWest": 98.3359375
+  },
+  {
+   "id": "NOACHIS",
+   "name": "Noachis Terra",
+   "file": "noachis.bin",
+   "ppd": 128,
+   "width": 930,
+   "height": 692,
+   "latTop": -39.296875,
+   "lngWest": 8.3671875
+  },
+  {
+   "id": "GALE",
+   "name": "Gale Crater & Mount Sharp",
+   "file": "gale.bin",
+   "ppd": 128,
+   "width": 477,
+   "height": 476,
+   "latTop": -3.5390625,
+   "lngWest": 135.9296875
+  },
+  {
+   "id": "THARSIS",
+   "name": "Tharsis Bulge (Pavonis Mons)",
+   "file": "tharsis.bin",
+   "ppd": 128,
+   "width": 864,
+   "height": 864,
+   "latTop": 4.875,
+   "lngWest": 243.71875
+  },
+  {
+   "id": "VALLES",
+   "name": "Valles Marineris (Melas/Candor)",
+   "file": "valles.bin",
+   "ppd": 128,
+   "width": 963,
+   "height": 952,
+   "latTop": -5.78125,
+   "lngWest": 280.734375
+  },
+  {
+   "id": "VASTITAS",
+   "name": "Vastitas Borealis (Phoenix region)",
+   "file": "vastitas.bin",
+   "ppd": 128,
+   "width": 1861,
+   "height": 692,
+   "latTop": 70.90625,
+   "lngWest": 227.03125
+  },
+  {
+   "id": "BOREUM",
+   "name": "Planum Boreum",
+   "file": "boreum.bin",
+   "ppd": 128,
+   "width": 3544,
+   "height": 432,
+   "latTop": 84.6875,
+   "lngWest": 346.15625
+  },
+  {
+   "id": "JEZERO_HIRISE",
+   "name": "Jezero Crater & Western Delta (HiRISE DTM ESP_045994_1985, ~4 m/px)",
+   "file": "jezero_hirise.bin",
+   "ppd": 14700,
+   "width": 1725,
+   "height": 3568,
+   "latTop": 18.548231292517006,
+   "lngWest": 77.38353741496599,
+   "scale": 0.02,
+   "offset": -2534,
+   "featherPx": 120
+  },
+  {
+   "id": "OLYMPUS",
+   "name": "Olympus Mons",
+   "file": "olympus.bin",
+   "ppd": 128,
+   "width": 1732,
+   "height": 1642,
+   "latTop": 25.0625,
+   "lngWest": 219.4296875
+  }
+ ]
+}

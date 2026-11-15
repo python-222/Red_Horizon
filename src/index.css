@@ -1,0 +1,900 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  .font-mono, code, pre {
+    font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  }
+
+  .font-display {
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+/* Subtle helmet optical visor vignette & tactical HUD grid styling */
+.hud-visor-grid {
+  background-image: 
+    linear-gradient(to right, rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(6, 182, 212, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.hud-crt-scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+}
+
+.hud-glow {
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+.hud-glow-amber {
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+}
+
+.hud-glow-red {
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.7);
+}
+
+/* ==========================================================================
+   Martian Excursion HUD — CSS overlay on full-screen Leaflet map
+   ========================================================================== */
+.eva-hud-shell {
+  --bg: #07090d;
+  --glass: rgba(10, 18, 26, 0.62);
+  --line: rgba(80, 220, 255, 0.45);
+  --line-dim: rgba(80, 220, 255, 0.18);
+  --cyan: #52e0ff;
+  --amber: #ffb347;
+  --red: #ff5a4d;
+  --green: #5dffa0;
+  --text: #cfeaf3;
+  --muted: #6f8d99;
+  --font: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --gap: 14px;
+
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 12px;
+  overflow: hidden;
+}
+
+.eva-hud-shell #map {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: #120806 url('https://upload.wikimedia.org/wikipedia/commons/a/a9/MARS-Viking.jpg') center / cover no-repeat;
+}
+
+/* vignette + scanlines over the map (non-interactive) */
+.eva-hud-shell .hud-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.65) 100%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px);
+}
+
+/* Mars Dust Storm Atmospheric Opacity Layer */
+.eva-hud-shell .dust-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 510;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(194, 92, 42, var(--dust-alpha, 0.25)), rgba(112, 42, 18, var(--dust-edge, 0.5)) 85%),
+    repeating-linear-gradient(-14deg, transparent 0 18px, rgba(235, 165, 110, 0.09) 18px 20px);
+  animation: mars-dust-drift 3.4s linear infinite;
+  transition: opacity 0.4s ease;
+}
+
+@keyframes mars-dust-drift {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 0 0, -180px 45px;
+  }
+}
+
+/* Solar Particle Event (SPE / CME) Proton Radiation & Ionospheric Glow Layer */
+.eva-hud-shell .spe-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 520;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 42%, rgba(255, 72, 48, var(--spe-edge, 0.36)) 100%),
+    repeating-linear-gradient(90deg, rgba(255, 180, 70, 0.04) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(0deg, rgba(255, 95, 140, 0.05) 0 2px, transparent 2px 9px);
+  animation: spe-proton-pulse 1.35s ease-in-out infinite alternate;
+}
+
+.eva-hud-shell .spe-fx.extreme {
+  animation: spe-proton-storm 0.45s steps(2, end) infinite;
+}
+
+@keyframes spe-proton-pulse {
+  0% {
+    opacity: 0.65;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes spe-proton-storm {
+  0% {
+    opacity: 0.78;
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    filter: hue-rotate(-10deg) saturate(1.25);
+  }
+  100% {
+    opacity: 0.85;
+    filter: hue-rotate(6deg);
+  }
+}
+
+/* Setting / Event Consequence Toast */
+@keyframes hud-fixed-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+@keyframes hud-toast-countdown {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+@keyframes hud-flow-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.eva-hud-shell .setting-toast {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1040;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px 11px;
+  background: rgba(10, 18, 28, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 20px rgba(82, 224, 255, 0.25);
+  max-width: min(560px, calc(100vw - 32px));
+  pointer-events: auto;
+  overflow: hidden;
+  animation: hud-fixed-toast-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.eva-hud-shell .setting-toast.toast-exiting,
+.eva-hud-shell .arrival-banner.toast-exiting,
+.eva-hud-shell .discovery-banner.toast-exiting {
+  opacity: 0 !important;
+  transform: translate(-50%, -8px) scale(0.98) !important;
+  pointer-events: none;
+}
+.eva-hud-shell .setting-toast-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  transform-origin: left center;
+  background: var(--cyan);
+  opacity: 0.85;
+  animation: hud-toast-countdown var(--toast-duration, 3500ms) linear forwards;
+}
+.eva-hud-shell .setting-toast.warn .setting-toast-progress {
+  background: var(--amber);
+}
+.eva-hud-shell .setting-toast.danger .setting-toast-progress {
+  background: var(--red);
+}
+.eva-hud-shell .arrival-banner .setting-toast-progress {
+  background: var(--green);
+}
+.eva-hud-shell .setting-toast.warn {
+  border-color: var(--amber);
+  background: rgba(26, 18, 6, 0.94);
+  box-shadow: 0 0 22px rgba(255, 179, 71, 0.28);
+}
+.eva-hud-shell .setting-toast.danger {
+  border-color: var(--red);
+  background: rgba(34, 8, 8, 0.95);
+  box-shadow: 0 0 24px rgba(255, 90, 77, 0.36);
+}
+.eva-hud-shell .setting-toast-title {
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--cyan);
+}
+.eva-hud-shell .setting-toast.warn .setting-toast-title {
+  color: var(--amber);
+}
+.eva-hud-shell .setting-toast.danger .setting-toast-title {
+  color: var(--red);
+}
+.eva-hud-shell .setting-toast-detail {
+  font-size: 11px;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.eva-hud-shell .rover-fault-pill {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 5px;
+  border: 1px solid rgba(255, 90, 77, 0.65);
+  background: rgba(255, 90, 77, 0.15);
+  color: #ff9b93;
+  text-transform: uppercase;
+}
+
+.eva-hud-shell .crosshair {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  z-index: 600;
+  pointer-events: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+.eva-hud-shell .crosshair::before,
+.eva-hud-shell .crosshair::after {
+  content: "";
+  position: absolute;
+  background: var(--cyan);
+}
+.eva-hud-shell .crosshair::before {
+  left: 50%;
+  top: -8px;
+  bottom: -8px;
+  width: 1px;
+}
+.eva-hud-shell .crosshair::after {
+  top: 50%;
+  left: -8px;
+  right: -8px;
+  height: 1px;
+}
+
+/* ---------- layout ---------- */
+.eva-hud-shell .hud {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--gap);
+  padding: var(--gap);
+  pointer-events: none; /* map stays draggable between panels */
+  z-index: 1000;
+}
+.eva-hud-shell .hud > * {
+  pointer-events: auto;
+}
+
+/* ---------- panel ---------- */
+.eva-hud-shell .panel {
+  position: relative;
+  background: var(--glass);
+  backdrop-filter: blur(8px) saturate(1.2);
+  -webkit-backdrop-filter: blur(8px) saturate(1.2);
+  border: 1px solid var(--line-dim);
+  padding: 12px 14px;
+  overflow: auto;
+}
+.eva-hud-shell .panel::before,
+.eva-hud-shell .panel::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  border: 2px solid var(--cyan);
+}
+.eva-hud-shell .panel::before {
+  top: -1px;
+  left: -1px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.eva-hud-shell .panel::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: 0;
+  border-top: 0;
+}
+
+.eva-hud-shell .panel h2 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line-dim);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.eva-hud-shell .panel h2 small {
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  font-weight: 400;
+}
+
+.eva-hud-shell .left {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  min-height: 0;
+}
+.eva-hud-shell .right {
+  grid-column: 3;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  min-height: 0;
+}
+.eva-hud-shell .left .panel,
+.eva-hud-shell .right .panel {
+  flex: 0 0 auto;
+}
+.eva-hud-shell .left .grow {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ---------- top bar ---------- */
+.eva-hud-shell .topbar {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 16px;
+  overflow: visible;
+}
+.eva-hud-shell .brand {
+  letter-spacing: 0.3em;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+.eva-hud-shell .brand span {
+  color: var(--amber);
+}
+.eva-hud-shell .hud-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.eva-hud-shell .topbar .stat {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.eva-hud-shell .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.eva-hud-shell .pill b {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+.eva-hud-shell .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: hud-pulse 1.8s infinite;
+}
+.eva-hud-shell .dot.warn {
+  background: var(--amber);
+  box-shadow: 0 0 8px var(--amber);
+}
+.eva-hud-shell .dot.bad {
+  background: var(--red);
+  box-shadow: 0 0 8px var(--red);
+}
+@keyframes hud-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---------- bottom bar ---------- */
+.eva-hud-shell .bottombar {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 8px 16px;
+  overflow: visible;
+}
+.eva-hud-shell .readout {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.eva-hud-shell .readout div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.eva-hud-shell .readout label {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.eva-hud-shell .readout output {
+  color: var(--cyan);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  min-width: 84px;
+}
+.eva-hud-shell .notice {
+  color: var(--amber);
+  align-self: center;
+  font-size: 11px;
+  max-width: 460px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eva-hud-shell .notice.bad {
+  color: var(--red);
+}
+.eva-hud-shell .notice.good {
+  color: var(--green);
+}
+
+.eva-hud-shell .arrival-banner {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px 12px;
+  background: rgba(8, 24, 18, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--green);
+  box-shadow: 0 0 22px rgba(93, 255, 160, 0.25);
+  color: var(--text);
+  pointer-events: auto;
+  max-width: calc(100vw - 32px);
+  overflow: hidden;
+  animation: hud-fixed-toast-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.eva-hud-shell .arrival-banner .arrival-title {
+  color: var(--green);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.eva-hud-shell .arrival-banner .arrival-sub {
+  color: var(--text);
+  font-size: 11px;
+  opacity: 0.9;
+}
+.eva-hud-shell .arrival-banner button {
+  color: var(--green);
+  border-color: rgba(93, 255, 160, 0.55);
+}
+.eva-hud-shell .arrival-banner button:hover {
+  background: rgba(93, 255, 160, 0.16);
+  box-shadow: 0 0 10px rgba(93, 255, 160, 0.35);
+}
+
+/* ---------- controls ---------- */
+.eva-hud-shell .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px dashed var(--line-dim);
+}
+.eva-hud-shell .row:last-child {
+  border-bottom: 0;
+}
+.eva-hud-shell .row label {
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+.eva-hud-shell .row output,
+.eva-hud-shell .row span.v {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.eva-hud-shell .toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  cursor: pointer;
+  user-select: none;
+}
+.eva-hud-shell .toggle input {
+  appearance: none;
+  width: 30px;
+  height: 14px;
+  border: 1px solid var(--line);
+  position: relative;
+  cursor: pointer;
+  background: transparent;
+  flex-shrink: 0;
+}
+.eva-hud-shell .toggle input::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  background: var(--muted);
+  transition: 0.15s;
+}
+.eva-hud-shell .toggle input:checked {
+  background: rgba(82, 224, 255, 0.15);
+}
+.eva-hud-shell .toggle input:checked::after {
+  left: 18px;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
+}
+.eva-hud-shell .toggle input:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.eva-hud-shell .toggle small {
+  color: var(--muted);
+  margin-left: auto;
+  font-size: 9px;
+}
+
+.eva-hud-shell button {
+  font: inherit;
+  color: var(--cyan);
+  background: transparent;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  padding: 5px 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-size: 10px;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  transition: 0.15s;
+  white-space: nowrap;
+}
+.eva-hud-shell button:hover {
+  background: rgba(82, 224, 255, 0.15);
+  box-shadow: 0 0 10px rgba(82, 224, 255, 0.35);
+}
+.eva-hud-shell button.on {
+  background: var(--amber);
+  color: #1b1000;
+  border-color: var(--amber);
+}
+.eva-hud-shell button.active-tab {
+  background: rgba(82, 224, 255, 0.22);
+  color: #ffffff;
+  border-color: var(--cyan);
+}
+.eva-hud-shell button.danger {
+  color: var(--red);
+  border-color: rgba(255, 90, 77, 0.55);
+}
+.eva-hud-shell button.danger.on {
+  background: var(--red);
+  color: #160402;
+  border-color: var(--red);
+}
+.eva-hud-shell button.override {
+  color: var(--green);
+  border-color: rgba(93, 255, 160, 0.55);
+}
+.eva-hud-shell button.override:hover {
+  background: rgba(93, 255, 160, 0.16);
+  box-shadow: 0 0 12px rgba(93, 255, 160, 0.35);
+}
+.eva-hud-shell button.override.active {
+  background: rgba(93, 255, 160, 0.22);
+  color: #d9ffea;
+  border-color: var(--green);
+  box-shadow: 0 0 12px rgba(93, 255, 160, 0.4);
+}
+.eva-hud-shell .btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- gauges ---------- */
+.eva-hud-shell .gauge {
+  margin: 8px 0;
+}
+.eva-hud-shell .gauge .head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.eva-hud-shell .gauge .head b {
+  color: var(--text);
+  font-weight: 600;
+}
+.eva-hud-shell .bar {
+  height: 8px;
+  border: 1px solid var(--line-dim);
+  background: rgba(255, 255, 255, 0.03);
+  background-image: repeating-linear-gradient(90deg, transparent 0 9px, rgba(0, 0, 0, 0.55) 9px 10px);
+  position: relative;
+}
+.eva-hud-shell .bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--v, 50%);
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  transition: width 0.6s;
+}
+.eva-hud-shell .bar.amber i {
+  background: var(--amber);
+  box-shadow: 0 0 8px var(--amber);
+}
+.eva-hud-shell .bar.red i {
+  background: var(--red);
+  box-shadow: 0 0 8px var(--red);
+}
+
+/* compass */
+.eva-hud-shell .compass {
+  width: 84px;
+  height: 84px;
+  margin: 4px auto 4px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  position: relative;
+  background: radial-gradient(circle, rgba(82, 224, 255, 0.08), transparent 70%);
+}
+.eva-hud-shell .compass::before {
+  content: "N";
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--amber);
+  font-size: 10px;
+}
+.eva-hud-shell .compass .needle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 34px;
+  background: linear-gradient(var(--amber) 50%, var(--cyan) 50%);
+  transform-origin: 50% 100%;
+  transform: translate(-50%, -100%) rotate(var(--hdg, 0deg));
+  will-change: transform;
+}
+
+/* waypoint list */
+.eva-hud-shell .wp-list {
+  list-style: none;
+  max-height: 190px;
+  overflow: auto;
+  margin-bottom: 6px;
+}
+.eva-hud-shell .wp-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px dashed var(--line-dim);
+  font-variant-numeric: tabular-nums;
+}
+.eva-hud-shell .wp-list li span:first-child {
+  color: var(--amber);
+}
+.eva-hud-shell .wp-list li button {
+  padding: 0 6px;
+  font-size: 10px;
+  clip-path: none;
+}
+.eva-hud-shell .empty {
+  color: var(--muted);
+  padding: 6px 0;
+}
+
+/* leaflet tweaks so the map matches the HUD */
+.eva-hud-shell .leaflet-container {
+  background: transparent;
+  font-family: var(--font);
+}
+.eva-hud-shell .leaflet-control-zoom {
+  display: none;
+}
+.eva-hud-shell .leaflet-control-attribution {
+  display: none;
+}
+.astro-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #52e0ff;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 4px rgba(82, 224, 255, 0.3), 0 0 14px #52e0ff;
+  animation: hud-pulse 1.8s infinite;
+}
+.wp-marker {
+  width: 12px;
+  height: 12px;
+  background: #ffb347;
+  transform: rotate(45deg);
+  border: 1px solid #000;
+  box-shadow: 0 0 10px #ffb347;
+}
+.wp-marker.next {
+  background: #52e0ff;
+  border: 1px solid #fff;
+  box-shadow: 0 0 0 3px rgba(82, 224, 255, 0.35), 0 0 14px #52e0ff;
+}
+.jezero-wp-marker {
+  width: 10px;
+  height: 10px;
+  background: rgba(82, 224, 255, 0.85);
+  transform: rotate(45deg);
+  border: 1px solid #07090d;
+  box-shadow: 0 0 8px rgba(82, 224, 255, 0.75);
+}
+.jezero-wp-marker.target {
+  background: #ffb347;
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 12px #ffb347;
+}
+.jezero-wp-marker.hab {
+  background: #5dffa0;
+  transform: none;
+  border-radius: 2px;
+  box-shadow: 0 0 10px #5dffa0;
+}
+.leaflet-tooltip.hud-map-tip {
+  background: rgba(10, 18, 26, 0.88);
+  border: 1px solid rgba(80, 220, 255, 0.45);
+  color: #cfeaf3;
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 0;
+  box-shadow: none;
+}
+.leaflet-tooltip.hud-map-tip::before {
+  display: none;
+}
+
+.eva-hud-shell .mobile-drawer-btns {
+  display: none;
+  gap: 6px;
+}
+
+.eva-hud-shell .planetary-atlas-drawer {
+  position: fixed;
+  top: 68px;
+  left: 304px;
+  bottom: 72px;
+  width: min(440px, calc(100vw - 320px));
+  z-index: 1035;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  .eva-hud-shell .planetary-atlas-drawer {
+    left: 14px;
+    width: calc(100vw - 28px);
+    top: 64px;
+    bottom: 68px;
+  }
+  .eva-hud-shell .hud {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  .eva-hud-shell .left,
+  .eva-hud-shell .right {
+    grid-column: 1;
+    grid-row: 2;
+    display: none;
+    max-width: 300px;
+  }
+  .eva-hud-shell .hud.show-left .left,
+  .eva-hud-shell .hud.show-right .right {
+    display: flex;
+  }
+  .eva-hud-shell .hud.show-right .right {
+    justify-self: end;
+  }
+  .eva-hud-shell .topbar .stat .pill:not(:first-child) {
+    display: none;
+  }
+  .eva-hud-shell .mobile-drawer-btns {
+    display: flex;
+  }
+  .eva-hud-shell .notice {
+    display: none;
+  }
+}

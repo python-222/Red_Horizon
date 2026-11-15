@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mars Walk — EVA HUD</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="hud.css">
+</head>
+<body>
+
+<div id="map"></div>
+<div class="hud-fx"></div>
+<div class="crosshair"></div>
+
+<div class="hud" id="hud">
+
+  <header class="panel topbar">
+    <div class="brand">MARS <span>WALK</span> · EVA</div>
+    <div class="stat">
+      <span class="pill"><i class="dot" id="linkDot"></i> Comms <b id="linkTxt">NOMINAL</b></span>
+      <span class="pill">Suit <b id="suitTxt">GREEN</b></span>
+      <span class="pill">EVA time <b id="clock">00:00:00</b></span>
+      <span class="pill">Remaining <b id="remain">07:00:00</b></span>
+    </div>
+  </header>
+
+  <aside class="left">
+    <section class="panel">
+      <h2>Map layers <small>USGS</small></h2>
+      <div id="layerList"></div>
+      <div class="btns">
+        <button id="btnHome">Global view</button>
+      </div>
+    </section>
+
+    <section class="panel grow">
+      <h2>Traverse <small id="wpCount">0</small></h2>
+      <div class="btns" style="margin:0 0 8px">
+        <button id="btnPlace">Set position</button>
+        <button id="btnAdd">Add waypoint</button>
+        <button id="btnClear">Clear</button>
+      </div>
+      <ul class="wp-list" id="wpList"></ul>
+      <div class="row"><label>Traverse length</label><output id="routeLen">0.0 km</output></div>
+      <div class="row"><label>To next waypoint</label><output id="toNext">--</output></div>
+    </section>
+  </aside>
+
+  <aside class="right">
+    <section class="panel">
+      <h2>Life support <small>MOCK</small></h2>
+      <div class="gauge"><div class="head"><span>Oxygen</span><b id="o2Txt">--</b></div><div class="bar" id="o2Bar"><i></i></div></div>
+      <div class="gauge"><div class="head"><span>Suit power</span><b id="batTxt">--</b></div><div class="bar" id="batBar"><i></i></div></div>
+      <div class="gauge"><div class="head"><span>CO₂ level</span><b id="co2Txt">--</b></div><div class="bar amber" id="co2Bar"><i></i></div></div>
+      <div class="gauge"><div class="head"><span>Suit temp</span><b id="tmpTxt">--</b></div><div class="bar amber" id="tmpBar"><i></i></div></div>
+      <div class="row"><label>Suit pressure</label><output id="spr">-- kPa</output></div>
+    </section>
+
+    <section class="panel">
+      <h2>Astronaut</h2>
+      <div class="compass"><div class="needle" id="needle"></div></div>
+      <div class="row"><label>Heading</label><output id="hdg">000°</output></div>
+      <div class="row"><label>Pace</label><output id="spd">0.0 m/s</output></div>
+      <div class="row"><label>Distance walked</label><output id="dist">0.00 km</output></div>
+      <div class="row"><label>Heart rate</label><output id="hr">-- bpm</output></div>
+    </section>
+
+    <section class="panel">
+      <h2>Environment <small>MOCK</small></h2>
+      <div class="row"><label>Air temp</label><output id="air">-- °C</output></div>
+      <div class="row"><label>Pressure</label><output id="prs">-- Pa</output></div>
+      <div class="row"><label>Wind</label><output id="wnd">-- m/s</output></div>
+    </section>
+  </aside>
+
+  <footer class="panel bottombar">
+    <div class="readout">
+      <div><label>Cursor lat</label><output id="lat">--</output></div>
+      <div><label>Cursor lon</label><output id="lon">--</output></div>
+      <div><label>Zoom</label><output id="zoom">--</output></div>
+      <div><label>Astronaut position</label><output id="pos">not set</output></div>
+    </div>
+    <div class="notice" id="notice"></div>
+  </footer>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="hud.js"></script>
+</body>
+</html>

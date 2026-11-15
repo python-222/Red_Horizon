@@ -1,0 +1,8 @@
+{
+  "name": "Remix  LATEST VERSION ALAM V5",
+  "description": "Astronaut heads-up display and real-time telemetry console processing NASA Mars datasets (MEDA, HiRISE, RAD) for Jezero Crater excursions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
