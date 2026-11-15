@@ -1688,7 +1688,7 @@ export const MarsWalkHud: React.FC<MarsWalkHudProps> = ({
         <header className="panel topbar">
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
             <div className="brand">
-              MARS <span>WALK</span> · EVA
+              RED <span>HORIZON</span>
             </div>
             <nav className="hud-nav">
               <button

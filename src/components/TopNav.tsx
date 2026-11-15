@@ -32,7 +32,7 @@ export const TopNav: React.FC<TopNavProps> = ({
       <div className="flex items-center gap-3 shrink-0">
         <Compass className="w-5 h-5 text-cyan-400 shrink-0" />
         <span className="font-display text-sm md:text-base font-bold tracking-wider text-slate-100 uppercase whitespace-nowrap shrink-0">
-          MARS <span className="text-amber-400">WALK</span> · EVA
+          RED <span className="text-amber-400">HORIZON</span>
         </span>
         <span className="hidden lg:inline text-xs font-mono text-slate-400">
           Sol {sol} · {timeUtc}
